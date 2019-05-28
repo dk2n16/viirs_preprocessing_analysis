@@ -44,7 +44,8 @@ class MakeVariables:
         self.variables_paths.setdefault('L1', self.get_l1_path())
         self.variables_paths.setdefault('subnational', self.get_subnational_paths())
         self.variables_paths.setdefault('ann_composite', self.get_annual_composite_path())
-        self.variables_paths.setdefault('raw_rad9_tiles', self.get_raw_radiance_tif())
+        self.variables_paths.setdefault('raw_rad9_tiles', self.get_raw_radiance_tiffs())
+        self.variables_paths.setdefault('raw_cvg_tiles', self.get_raw_coverage_tiffs())
 
     def get_l0_path(self):
         """Returns path to national level shapefile"""
@@ -69,8 +70,16 @@ class MakeVariables:
             path = self.BASEDIR.parent.parent.joinpath(f'download_viirs_iridis/download_viirs_iridis/datain/Annual_2015_2016/SVDNB_npp_20160101-20161231_{self.extent}_vcm-orm-ntl_v10_c201807311200.avg_rade9.tif')
         return path
 
-    def get_raw_radiance_tif(self):
-        """Returns path to raw radiance tile"""
-        path = self.BASEDIR.joinpath()
+    def get_raw_radiance_tiffs(self):
+        """Returns paths to raw radiance tiles"""
+        PATHDIR = self.BASEDIR.parent.parent.joinpath(f'download_viirs_iridis/download_viirs_iridis/datain/{self.year}')
+        rasters = [[x for x in y.iterdir() if x.name.endswith('rade9h.tif') if self.extent in x.name][0] for y in PATHDIR.iterdir() if y.name != 'Annual_2015_2016']
+        sorted(rasters)
+        return rasters
 
-    
+    def get_raw_coverage_tiffs(self):
+        """Returns paths to raw coverage tiles"""
+        PATHDIR = self.BASEDIR.parent.parent.joinpath(f'download_viirs_iridis/download_viirs_iridis/datain/{self.year}')
+        rasters = [[x for x in y.iterdir() if x.name.endswith('cvg.tif') if self.extent in x.name][0] for y in PATHDIR.iterdir() if y.name != 'Annual_2015_2016']
+        sorted(rasters)
+        return rasters
