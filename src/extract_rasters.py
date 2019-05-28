@@ -28,7 +28,7 @@ class ExtractFromTiles:
             features = [feature["geometry"] for feature in shapefile]
 
         with rasterio.open(str(self.in_raster)) as src:
-            out_image, out_transform = rasterio.mask.mask(src, features, crop=True)
+            out_image, out_transform = rasterio.mask.mask(src, features, nodata=-99999, crop=True)
             out_meta = src.meta.copy()
         
         out_meta.update({
