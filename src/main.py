@@ -58,9 +58,11 @@ def main(country, year):
 
 
 if __name__ == "__main__":
-    countries = ['HTI']
+    #countries = ['HTI', 'NAM', 'MOZ', 'GHA', 'NPL']
+    countries = ['NAM', 'MOZ', 'GHA', 'NPL']
     #years = [2012, 2013, 2014, 2015, 2016, 2017, 2018]
-    years = [2012]
+    years = [2012, 2013, 2014]
+    #years = [2012]
     for country in countries:
         for year in years:
             main(country, year)
