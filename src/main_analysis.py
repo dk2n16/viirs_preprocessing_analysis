@@ -6,7 +6,7 @@ from extract_rasters import ExtractFromRasters
 def main(country):
     
     L1 = BASE_DIR.joinpath(f'shps/L1/{country}/{country}_adm1.shp')
-    subnational = [x for x in BASE_DIR.joinpath(f'shps/L2_L3_L4/{country}').iterdir() if x.name.endswith('shp') if not x.name.endswith('1.shp')]
+    subnational = [x for x in BASE_DIR.joinpath(f'shps/L2_L3_L4/{country}').iterdir() if x.name.endswith('2.shp') if not x.name.endswith('1.shp')]
     sorted(subnational)
     L1_expl = L1.parent.joinpath('exploded')
     if not L1_expl.exists():
@@ -66,7 +66,8 @@ def main_extract_subnational_rasters(country):
 if __name__ == "__main__":
     BASE_DIR = Path(__file__).resolve().parent.parent
     #countries = ['HTI', 'NAM', 'MOZ', 'GHA', 'NPL']
-    countries = ['HTI']
+    countries = ['GHA', 'NPL']
+    #countries = ['HTI']
     for country in countries:
-        #main(country)
+        main(country)
         main_extract_subnational_rasters(country)

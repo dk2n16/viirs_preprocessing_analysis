@@ -19,6 +19,7 @@ mapclassify = "*"
 adjusttext = "*"
 geopandas = "*"
 sklearn = "*"
+seaborn = "*"
 
 [dev-packages]
 pylint = "*"

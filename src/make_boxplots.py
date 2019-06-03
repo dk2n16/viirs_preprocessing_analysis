@@ -53,5 +53,6 @@ class MakeBoxPlots:
             plt.yscale('log')
         bp = ax.boxplot(temporal_units)
         fig.savefig(self.out_image, bbox_inches='tight')
+        plt.close(fig)
 
                 

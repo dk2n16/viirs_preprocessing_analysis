@@ -1,3 +1,4 @@
+"""Main module to create boxplots to show spread of data between months over years"""
 from pathlib import Path
 from make_boxplots import MakeBoxPlots
 
@@ -20,10 +21,10 @@ def main(country, adm_units, level):
 
 if __name__ == "__main__":
     BASEDIR = Path(__file__).resolve().parent.parent
-    #countries = ['HTI', 'NAM', 'GHA', 'MOZ', 'NPL']
-    countries = ['HTI']
-    #levels = ['l1', 'l2']
-    levels = ['l2']
+    countries = ['HTI', 'NAM', 'GHA', 'MOZ', 'NPL']
+    #countries = ['HTI']
+    levels = ['l1', 'l2']
+    #levels = ['l2']
     for level in levels:
         for country in countries:
             adm_units = sorted(['_'.join(x.name.split('_')[:3]) for x in BASEDIR.joinpath(f'datain/{country}/2012/04/subnational/{level}').iterdir() if x.name.endswith('.tif')])
