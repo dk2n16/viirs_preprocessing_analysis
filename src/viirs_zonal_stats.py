@@ -101,5 +101,56 @@ class IntraYearZonalStats:
         df = pd.concat(self.df_to_concat)
         df.to_csv(self.out_table, index=False)
 
+
+class MonthlyZonalStats:
+    """Class to calculate zonal stats for all months in a year based on input subnational shapefile."""
+
+    def __init__(self, BASEDIR, country, year, shp, out_table):
+        """
+        country: ISO
+        shp: shapefile to define zones
+        out_table: output zonal stats table
+        """
+        self.BASEDIR = BASEDIR
+        self.country = country
+        self.year = year
+        self.shp = shp
+        self.out_table = out_table
+        self.df_to_concat = []
+        self.zonal_stats_all_months()
+        self.concat_and_save()
+
+
+    def zonal_stats_all_months(self):
+        """Calculate zonal stats for each month"""
+        months = sorted([ x for x in self.BASEDIR.joinpath(f'datain/{self.country}/{self.year}').iterdir()])
+        for month in months:
+            if month.name == 'Annual_comp':
+                raster = month.joinpath(f'{self.country}_Annual_comp_{self.year}.tif')
+            else:
+                raster = [x for x in month.iterdir() if x.name.endswith('masked_rad.tif')][0]
+            stats_month = zonal_stats(str(self.shp), raster, stats="min max mean median std range count sum nodata", add_stats={'lit_pixels': self.lit_pixels}, geojson_out=True)
+            stats_geojson_month = gpd.GeoDataFrame.from_features(stats_month)
+            name_id = list(stats_geojson_month.columns.values[:2])
+            additional_cols = list([f'count_{month.name}', 'geometry', f'lit_pixels_{month.name}', f'max_{month.name}', f'mean_{month.name}', f'median_{month.name}', f'min_{month.name}', f'nodata_{month.name}', f'range_{month.name}', f'std_{month.name}', f'sum_{month.name}'])
+            cols = name_id + additional_cols
+            stats_geojson_month.columns = cols
+            stats_geojson_month = stats_geojson_month.drop('geometry', axis=1)
+            df = pd.DataFrame(stats_geojson_month)
+            self.df_to_concat.append(df)
+
+    def concat_and_save(self):
+        """Concatenate all the months to a table and save"""
+        name_id_col = list(self.df_to_concat[0].columns.values[:2])
+        df_all_months_for_unit = reduce(lambda df1,df2: pd.merge(df1,df2,on=[name_id_col[0], name_id_col[1]]), self.df_to_concat)
+        df_all_months_for_unit.to_csv(self.out_table)
+
+    def lit_pixels(self, x):
+        """Get count of non_zero pixels"""
+        x[x < 0] = 0
+        return np.count_nonzero(x)
+            
+
+
         
         
